@@ -27,28 +27,26 @@ export const getById = async (req, res) => {
 
 export const createModelo = async (req, res) => {
     try {
-        const { Nombre, Descripcion,  UnidadesMaximas , UnidadesMinimas} = req.body;
-        if (!Nombre || !Descripcion || !UnidadesMaximas || !UnidadesMinimas) {
+        console.log(req.body);
+        
+        const {  Nombre, Descripcion, Codigo, Tipo_Producto, Tipo_Unidad, Unidades_Maximas, Unidades_Minimas } = req.body;
+        if (!Nombre || !Descripcion || !Codigo || !Tipo_Producto || !Tipo_Unidad || !Unidades_Maximas || !Unidades_Minimas) {
             return res.status(400).json({ error: 'Nombre y Descripción son requeridos' });
         }
         const [data] = await pool.query(
             `
-            INSERT INTO Modelos_Productos (
-                Nombre,
-                Descripcion,
-                Unidades_Maximas,
-                Unidades_Maximas,
-            ) VALUES (?, ?, ?, ?);
+            INSERT INTO Modelos_Productos (Nombre, Descripcion, Codigo, Tipo_Producto, Tipo_Unidad, Unidades_Maximas, Unidades_Minimas)
+            VALUES (?, ?, ?, ?, ?, ?, ?);
             `,
-            [Nombre, Descripcion,  UnidadesMaximas , UnidadesMinimas]
+            [Nombre, Descripcion, Codigo, Tipo_Producto, Tipo_Unidad, Unidades_Maximas, Unidades_Minimas]
         );
 
         const modeloCreado = {
             Id_Modelo: data.insertId,
             Nombre: Nombre,
             Descripcion: Descripcion,
-            UnidadesMaximas: UnidadesMaximas,
-            UnidadesMinimas: UnidadesMinimas
+            Unidades_Maximas: Unidades_Maximas,
+            Unidades_Minimas: Unidades_Minimas
         };
 
         res.status(201).json({

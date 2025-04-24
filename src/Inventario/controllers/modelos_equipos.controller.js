@@ -28,9 +28,12 @@ export const getById = async (req, res) => {
 
 export const createModelo = async (req, res) => {
   try {
-    const { Modelo, Nombre, Descripcion, Codigo, Marca, Unidades } = req.body;
+    const { Modelo, Nombre, Descripcion, Codigo, Marca } = req.body;
 
-    if (!Modelo || !Nombre || !Descripcion || !Codigo || !Marca || !Unidades) {
+    console.log(req.body);
+    
+
+    if (!Modelo || !Nombre || !Descripcion || !Codigo || !Marca ) {
       return res.status(400).json({ error: 'Todos los campos son requeridos' });
     }
 
@@ -45,7 +48,7 @@ export const createModelo = async (req, res) => {
         Unidades
       ) VALUES (?, ?, ?, ?, ?, ?);
       `,
-      [Modelo, Nombre, Descripcion, Codigo, Marca, Unidades]
+      [Modelo, Nombre, Descripcion, Codigo, Marca, 0]
     );
 
     const modeloCreado = {
@@ -55,7 +58,6 @@ export const createModelo = async (req, res) => {
       Descripcion: Descripcion,
       Codigo: Codigo,
       Marca: Marca,
-      Unidades: Unidades,
     };
 
     res.status(201).json({

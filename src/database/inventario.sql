@@ -93,7 +93,20 @@ CREATE TABLE repuestos (
     FOREIGN KEY (Id_Ubicacion) REFERENCES almacenes_ubicaciones(Id_Ubicacion)
 );
 
--- DELIMITER $$
+DELIMITER $$
+-- Trigger para actualizar las unidades de Equipos
+CREATE TRIGGER actualizar_unidades_equipo
+AFTER UPDATE ON Equipos
+FOR EACH ROW
+BEGIN
+    UPDATE Modelos_Equipos
+    SET Unidades = (
+        SELECT COUNT(*)
+        FROM Equipos
+        WHERE Id_Modelo = NEW.Id_Modelo
+    )
+    WHERE Id_Modelo = NEW.Id_Modelo;
+END$$
 
 -- CREATE TRIGGER actualizar_unidades_producto
 -- AFTER UPDATE ON Productos_Ubicacion
@@ -122,18 +135,5 @@ CREATE TABLE repuestos (
 --     WHERE Id_Instrumento = NEW.Id_Instrumento;
 -- END$$
 
--- Trigger para actualizar las unidades de Equipos
--- CREATE TRIGGER actualizar_unidades_equipo
--- AFTER UPDATE ON Equipos
--- FOR EACH ROW
--- BEGIN
---     UPDATE Modelos_Equipos
---     SET Unidades = (
---         SELECT COUNT(*)
---         FROM Equipos
---         WHERE Id_Modelo = NEW.Id_Modelo
---     )
---     WHERE Id_Modelo = NEW.Id_Modelo;
--- END$$
 
 -- DELIMITER ;
