@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grey Sloan Memorial Hospital - Inventario</title> <!-- Updated Title -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Optional: Custom styles for the cards */
+        .dashboard-card {
+            transition: transform .2s;
+        }
+        .dashboard-card:hover {
+            transform: scale(1.03);
+        }
+        .dashboard-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 120px; /* Adjust as needed */
+        }
+        .dashboard-card .card-title {
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+        .dashboard-card i {
+            font-size: 2rem; /* Icon size */
+            color: #007bff; /* Icon color */
+        }
+        a.card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+         a.card-link:hover {
+             text-decoration: none;
+            color: inherit;
+         }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Existing Sidebar Navigation -->
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <h2>CRM Hospital</h2>
+                 <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Inicio</a></li> <!-- Link to root -->
+                    <li><a href="#"><i class="fas fa-users"></i> Gestión de Personal</a></li>
+                    <li><a href="#"><i class="fas fa-vial"></i> Laboratorio</a></li>
+                    <!-- Updated Inventario link to point to the main index which now serves as dashboard -->
+                    <li><a href="/" class="active"><i class="fas fa-boxes"></i> Inventario</a></li>
+                    <li><a href="#"><i class="fas fa-shopping-cart"></i> Compras</a></li>
+                    <li><a href="#"><i class="fas fa-tooth"></i> Consultas Odontológicas</a></li>
+                    <li><a href="#"><i class="fas fa-stethoscope"></i> Consultas Médicas</a></li>
+                    <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Administración</a></li>
+                    <li><a href="#"><i class="fas fa-procedures"></i> Hospitalización</a></li>
+                    <li><a href="#"><i class="fas fa-tools"></i> Mantenimiento</a></li>
+                    <li><a href="#"><i class="fas fa-calendar-check"></i> Gestión de Citas</a></li>
+                </ul>
+                <div class="bottom-links">
+                    <ul>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> Help</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="main-content pt-3">
+                    <h1 class="mb-4">Inventario manjeo de inventario</h1>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-6 mb-4">
+                            <a href="pages/almacenes.html" class="card-link">
+                                <div class="card text-center dashboard-card h-100">
+                                    <div class="card-body">
+                                        <i class="fas fa-warehouse"></i>
+                                        <h5 class="card-title">Almacenes</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-6 mb-4">
+                            <a href="pages/equipos.html" class="card-link">
+                                <div class="card text-center dashboard-card h-100">
+                                    <div class="card-body">
+                                        <i class="fas fa-laptop-medical"></i>
+                                        <h5 class="card-title">Equipos</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-6 mb-4">
+                            <a href="pages/instrumentos.html" class="card-link">
+                                <div class="card text-center dashboard-card h-100">
+                                    <div class="card-body">
+                                        <i class="fas fa-tools"></i>
+                                        <h5 class="card-title">Instrumentos</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-6 mb-4">
+                            <a href="pages/productos.html" class="card-link">
+                                <div class="card text-center dashboard-card h-100">
+                                    <div class="card-body">
+                                        <i class="fas fa-pills"></i>
+                                        <h5 class="card-title">Productos</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-6 mb-4">
+                            <a href="pages/repuestos.html" class="card-link">
+                                <div class="card text-center dashboard-card h-100">
+                                    <div class="card-body">
+                                        <i class="fas fa-cogs"></i>
+                                        <h5 class="card-title">Repuestos</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

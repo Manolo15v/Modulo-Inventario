@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grey Sloan Memorial Hospital - Inventario</title> 
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            margin: 0 2px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+        .view-btn {
+            background-color: #17a2b8;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        a.card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        a.card-link:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .custom-toast {
+            min-width: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <h2>CRM Hospital</h2>
+                 <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Inicio</a></li> <!-- Link to root -->
+                    <li><a href="#"><i class="fas fa-users"></i> Gestión de Personal</a></li>
+                    <li><a href="#"><i class="fas fa-vial"></i> Laboratorio</a></li>
+                    <!-- Updated Inventario link to point to the main index which now serves as dashboard -->
+                    <li><a href="/" class="active"><i class="fas fa-boxes"></i> Inventario</a></li>
+                    <li><a href="#"><i class="fas fa-shopping-cart"></i> Compras</a></li>
+                    <li><a href="#"><i class="fas fa-tooth"></i> Consultas Odontológicas</a></li>
+                    <li><a href="#"><i class="fas fa-stethoscope"></i> Consultas Médicas</a></li>
+                    <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Administración</a></li>
+                    <li><a href="#"><i class="fas fa-procedures"></i> Hospitalización</a></li>
+                    <li><a href="#"><i class="fas fa-tools"></i> Mantenimiento</a></li>
+                    <li><a href="#"><i class="fas fa-calendar-check"></i> Gestión de Citas</a></li>
+                </ul>
+                <div class="bottom-links">
+                    <ul>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> Help</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <h1 class="mb-4">Gestión de instrumentos</h1>
+        
+                <!-- Pestañas de navegación -->
+                <ul class="nav nav-pills mb-4" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="instrumentos-tab" data-bs-toggle="pill" data-bs-target="#instrumentos-tab-pane" type="button" role="tab" aria-controls="instrumentos-tab-pane" aria-selected="true" onclick="loadInstrumentos()">
+                            <i class="fas fa-tools me-2"></i>Instrumentos
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="ubicaciones-tab" data-bs-toggle="pill" data-bs-target="#ubicaciones-tab-pane" type="button" role="tab" aria-controls="ubicaciones-tab-pane" aria-selected="false" onclick="loadInstrumentosUbicacion()">
+                            <i class="fas fa-map-marker-alt me-2"></i>Instrumentos por ubicación
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Contenido de las pestañas -->
+                <div class="tab-content" id="myTabContent">
+                    <!-- Pestaña de Instrumentos -->
+                    <div class="tab-pane fade show active" id="instrumentos-tab-pane" role="tabpanel" aria-labelledby="instrumentos-tab" tabindex="0">
+                        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#instrumentoModal" onclick="prepareNewInstrumento()">
+                            <i class="fas fa-plus"></i> Nuevo instrumento
+                        </button>
+                        
+                        <div class="search-container">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Buscar instrumentos..." onkeyup="searchInstrumentos()">
+                            <button class="search-btn" onclick="searchInstrumentos()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Instrumentos</h2>
+                                <p>Gestione todos los instrumentos.</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="table-header">
+                                                <th>Nombre</th>
+                                                <th>Descripción</th>
+                                                <th>Tipo</th>
+                                                <th>Unidades</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="instrumentosTableBody">
+                                            <!-- Los datos se cargarán aquí dinámicamente -->
+                                            <tr>
+                                                <td colspan="5" class="empty-message">No hay instrumentos disponibles</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#instrumentoModal" onclick="prepareNewInstrumento()">
+                            <i class="fas fa-plus"></i> Nuevo instrumento
+                        </button>
+                    </div>
+                    
+                    <!-- Pestaña de Instrumentos por Ubicación -->
+                    <div class="tab-pane fade" id="ubicaciones-tab-pane" role="tabpanel" aria-labelledby="ubicaciones-tab" tabindex="0">
+                        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#ubicacionModal" onclick="prepareNewUbicacion()">
+                            <i class="fas fa-plus"></i> Nueva asignación de instrumento
+                        </button>
+                        
+                        <div class="search-container">
+                            <input type="text" id="searchUbicacionInput" class="form-control" placeholder="Buscar instrumentos por ubicación..." onkeyup="searchInstrumentosUbicacion()">
+                            <button class="search-btn" onclick="searchInstrumentosUbicacion()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Instrumentos por ubicación</h2>
+                                <p>Gestione la distribución de instrumentos por ubicación.</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="table-header">
+                                                <th>Instrumento</th>
+                                                <th>Tipo</th>
+                                                <th>Área</th>
+                                                <th>Ubicación</th>
+                                                <th>Unidades</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ubicacionesTableBody">
+                                            <!-- Los datos se cargarán aquí dinámicamente -->
+                                            <tr>
+                                                <td colspan="6" class="empty-message">No hay asignaciones de instrumentos disponibles</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#ubicacionModal" onclick="prepareNewUbicacion()">
+                            <i class="fas fa-plus"></i> Nueva asignación de instrumento
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Añadir/Editar Instrumento -->
+            <div class="modal fade" id="instrumentoModal" tabindex="-1" aria-labelledby="instrumentoModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="instrumentoModalLabel">Nuevo Instrumento</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="instrumentoForm">
+                                <input type="hidden" id="instrumentoId" value="">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="nombreInput" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="nombreInput" required placeholder="Ej: Microscopio Óptico">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="codigoInput" class="form-label">Código</label>
+                                        <input type="text" class="form-control" id="codigoInput" required placeholder="Ej: MIC-001">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="descripcionInput" class="form-label">Descripción</label>
+                                    <textarea class="form-control" id="descripcionInput" rows="2" required placeholder="Ej: Microscopio de alta precisión para laboratorio"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tipoInput" class="form-label">Tipo de Instrumento</label>
+                                        <select class="form-select" id="tipoInput" required>
+                                            <option value="" disabled selected>Seleccione un tipo</option>
+                                            <option value="Medición">Medición</option>
+                                            <option value="Corte">Corte</option>
+                                            <option value="Sujeción">Sujeción</option>
+                                            <option value="Diagnóstico">Diagnóstico</option>
+                                            <option value="Examinación">Examinación</option>
+                                            <option value="Inyección">Inyección</option>
+                                            <option value="Apoyo">Apoyo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="unidadesInput" class="form-label">Unidades</label>
+                                        <input type="number" class="form-control" id="unidadesInput" required min="0" placeholder="Ej: 10">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="unidadesMinInput" class="form-label">Unidades Mínimas</label>
+                                        <input type="number" class="form-control" id="unidadesMinInput" required min="0" placeholder="Ej: 3">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="unidadesMaxInput" class="form-label">Unidades Máximas</label>
+                                        <input type="number" class="form-control" id="unidadesMaxInput" required min="0" placeholder="Ej: 20">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" onclick="saveInstrumento()">
+                                <i class="fas fa-save me-1"></i> Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Añadir/Editar Instrumento por Ubicación -->
+            <div class="modal fade" id="ubicacionModal" tabindex="-1" aria-labelledby="ubicacionModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="ubicacionModalLabel">Nueva Asignación de Instrumento</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="ubicacionForm">
+                                <input type="hidden" id="currentInstrumentoId" value="">
+                                <input type="hidden" id="currentUbicacionId" value="">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="instrumentoSelect" class="form-label">Instrumento</label>
+                                        <select class="form-select" id="instrumentoSelect" required>
+                                            <option value="" disabled selected>Seleccione un instrumento</option>
+                                            <!-- Los instrumentos se cargarán dinámicamente -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="ubicacionSelect" class="form-label">Ubicación</label>
+                                        <select class="form-select" id="ubicacionSelect" required>
+                                            <option value="" disabled selected>Seleccione una ubicación</option>
+                                            <!-- Las ubicaciones se cargarán dinámicamente -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="unidadesPorUbicacionInput" class="form-label">Unidades en esta ubicación</label>
+                                    <input type="number" class="form-control" id="unidadesPorUbicacionInput" required min="1" placeholder="Ej: 10">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" onclick="saveUbicacion()">
+                                <i class="fas fa-save me-1"></i> Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Ver Detalles de Instrumento -->
+            <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title" id="viewModalLabel">Detalles del Instrumento</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title" id="viewNombre"></h5>
+                                    <p class="card-text"><strong>ID:</strong> <span id="viewId"></span></p>
+                                    <p class="card-text"><strong>Descripción:</strong> <span id="viewDescripcion"></span></p>
+                                    <p class="card-text"><strong>Código:</strong> <span id="viewCodigo"></span></p>
+                                    <p class="card-text"><strong>Tipo:</strong> <span id="viewTipo"></span></p>
+                                    <p class="card-text"><strong>Unidades:</strong> <span id="viewUnidades"></span></p>
+                                    <p class="card-text"><strong>Unidades Mínimas:</strong> <span id="viewUnidadesMin"></span></p>
+                                    <p class="card-text"><strong>Unidades Máximas:</strong> <span id="viewUnidadesMax"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Ver Detalles de Instrumento por Ubicación -->
+            <div class="modal fade" id="viewUbicacionModal" tabindex="-1" aria-labelledby="viewUbicacionModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title" id="viewUbicacionModalLabel">Detalles de Instrumento por Ubicación</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title" id="viewUbicacionNombre"></h5>
+                                    <p class="card-text"><strong>ID Instrumento:</strong> <span id="viewUbicacionInstrumentoId"></span></p>
+                                    <p class="card-text"><strong>ID Ubicación:</strong> <span id="viewUbicacionUbicacionId"></span></p>
+                                    <p class="card-text"><strong>Tipo:</strong> <span id="viewUbicacionTipo"></span></p>
+                                    <p class="card-text"><strong>Área:</strong> <span id="viewUbicacionArea"></span></p>
+                                    <p class="card-text"><strong>Ubicación:</strong> <span id="viewUbicacionNombreUbicacion"></span></p>
+                                    <p class="card-text"><strong>Unidades en esta ubicación:</strong> <span id="viewUbicacionUnidades"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal de Confirmación para Eliminar Instrumento -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Esta acción no se puede deshacer.
+                            </div>
+                            <p>¿Está seguro que desea eliminar este instrumento?</p>
+                            <p><strong>Nombre:</strong> <span id="deleteNombre"></span></p>
+                            <p><strong>Código:</strong> <span id="deleteCodigo"></span></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                                <i class="fas fa-trash me-1"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal de Confirmación para Eliminar Instrumento por Ubicación -->
+            <div class="modal fade" id="deleteUbicacionModal" tabindex="-1" aria-labelledby="deleteUbicacionModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="deleteUbicacionModalLabel">Confirmar Eliminación</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Esta acción no se puede deshacer.
+                            </div>
+                            <p>¿Está seguro que desea eliminar esta asignación de instrumento?</p>
+                            <p><strong>Instrumento:</strong> <span id="deleteUbicacionNombre"></span></p>
+                            <p><strong>Ubicación:</strong> <span id="deleteUbicacionUbicacion"></span></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" onclick="confirmDeleteUbicacion()">
+                                <i class="fas fa-trash me-1"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </main>
+        </div>
+        
+
+    <!-- Contenedor para las notificaciones toast -->
+    <div class="toast-container"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Variables globales
+        let instrumentos = [];
+        let ubicaciones = [];
+        let instrumentosUbicacion = [];
+        let currentInstrumentoId = null;
+        let currentUbicacionInstrumentoId = null;
+        let currentUbicacionUbicacionId = null;
+        
+        const apiUrlInstrumento = '/api/inventario/instrumento';
+        const apiUrlUbicacion = '/api/inventario/almacen';
+        const apiUrlInstrumentoUbicacion = '/api/inventario/instrumentoUbicacion';
+        
+        // Cargar datos al iniciar la página
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadInstrumentos();
+            await loadAllUbicaciones();
+        });
+        
+        // Función para cargar los instrumentos desde la API
+        async function loadInstrumentos() {
+            try {
+                const response = await fetch(apiUrlInstrumento);
+                if (!response.ok) {
+                    throw new Error('Error al cargar los datos de instrumentos');
+                }
+                instrumentos = await response.json();
+                
+                // Si la respuesta es un objeto único, convertirlo en array
+                if (!Array.isArray(instrumentos)) {
+                    instrumentos = [instrumentos];
+                }
+                
+                renderInstrumentos(instrumentos);
+                populateInstrumentosSelect();
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error al cargar los datos de instrumentos. No hay instrumentos disponibles.', 'danger');
+                
+                // Dejar instrumentos como un array vacío
+                instrumentos = [];
+                renderInstrumentos(instrumentos);
+            }
+        }
+        
+        // Función para cargar todas las ubicaciones
+        async function loadAllUbicaciones() {
+            try {
+                const response = await fetch(apiUrlUbicacion);
+                if (!response.ok) {
+                    throw new Error('Error al cargar las ubicaciones');
+                }
+                ubicaciones = await response.json();
+                
+                // Si la respuesta es un objeto único, convertirlo en array
+                if (!Array.isArray(ubicaciones)) {
+                    ubicaciones = [ubicaciones];
+                }
+                
+                populateUbicacionesSelect();
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error al cargar las ubicaciones. No hay ubicaciones disponibles.', 'danger');
+                
+                // Dejar ubicaciones como un array vacío
+                ubicaciones = [];
+            }
+        }
+        
+        // Función para cargar los instrumentos por ubicación
+        async function loadInstrumentosUbicacion() {
+            try {
+                const response = await fetch(apiUrlInstrumentoUbicacion);
+                if (!response.ok) {
+                    throw new Error('Error al cargar los datos de instrumentos por ubicación');
+                }
+                instrumentosUbicacion = await response.json();
+                
+                // Si la respuesta es un objeto único, convertirlo en array
+                if (!Array.isArray(instrumentosUbicacion)) {
+                    instrumentosUbicacion = [instrumentosUbicacion];
+                }
+                
+                renderInstrumentosUbicacion(instrumentosUbicacion);
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error al cargar los datos de instrumentos por ubicación. No hay datos disponibles.', 'danger');
+                
+                // Dejar instrumentosUbicacion como un array vacío
+                instrumentosUbicacion = [];
+                renderInstrumentosUbicacion(instrumentosUbicacion);
+            }
+        }
+        
+        // Función para llenar el select de instrumentos
+        function populateInstrumentosSelect() {
+            const select = document.getElementById('instrumentoSelect');
+            // Limpiar opciones existentes excepto la primera
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // Añadir los instrumentos al select
+            instrumentos.forEach(instrumento => {
+                const option = document.createElement('option');
+                option.value = instrumento.Id_Instrumento;
+                option.textContent = `${instrumento.Nombre} (${instrumento.Codigo})`;
+                select.appendChild(option);
+            });
+        }
+        
+        // Función para llenar el select de ubicaciones
+        function populateUbicacionesSelect() {
+            const select = document.getElementById('ubicacionSelect');
+            // Limpiar opciones existentes excepto la primera
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // Añadir las ubicaciones al select
+            ubicaciones.forEach(ubicacion => {
+                const option = document.createElement('option');
+                option.value = ubicacion.Id_Ubicacion;
+                option.textContent = `${ubicacion.Area} - ${ubicacion.Ubicacion}`;
+                select.appendChild(option);
+            });
+        }
+        
+        // Función para renderizar los instrumentos en la tabla
+        function renderInstrumentos(data) {
+            const tableBody = document.getElementById('instrumentosTableBody');
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="5" class="empty-message">No hay instrumentos disponibles</td>
+                `;
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            data.forEach(instrumento => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${instrumento.Nombre}</td>
+                    <td>${instrumento.Descripcion}</td>
+                    <td>${instrumento.Tipo_Instrumento}</td>
+                    <td>${instrumento.Unidades}</td>
+                    <td>
+                        <div class="action-btn view-btn" onclick="viewInstrumento(${instrumento.Id_Instrumento})" title="Ver detalles">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="action-btn edit-btn" onclick="editInstrumento(${instrumento.Id_Instrumento})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="action-btn delete-btn" onclick="deleteInstrumento(${instrumento.Id_Instrumento})" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Función para renderizar los instrumentos por ubicación en la tabla
+        function renderInstrumentosUbicacion(data) {
+            const tableBody = document.getElementById('ubicacionesTableBody');
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="6" class="empty-message">No hay asignaciones de instrumentos disponibles</td>
+                `;
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.Nombre_Instrumento}</td>
+                    <td>${item.Tipo_Instrumento}</td>
+                    <td>${item.Area}</td>
+                    <td>${item.Nombre_Ubicacion}</td>
+                    <td>${item.Unidades_Por_Ubicacion}</td>
+                    <td>
+                        <div class="action-btn view-btn" onclick="viewInstrumentoUbicacion(${item.Id_Instrumento}, ${item.Id_Ubicacion})" title="Ver detalles">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="action-btn edit-btn" onclick="editInstrumentoUbicacion(${item.Id_Instrumento}, ${item.Id_Ubicacion})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="action-btn delete-btn" onclick="deleteInstrumentoUbicacion(${item.Id_Instrumento}, ${item.Id_Ubicacion})" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Función para buscar instrumentos
+        function searchInstrumentos() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredInstrumentos = instrumentos.filter(instrumento => 
+                instrumento.Nombre.toLowerCase().includes(searchTerm) || 
+                instrumento.Descripcion.toLowerCase().includes(searchTerm) ||
+                instrumento.Codigo.toLowerCase().includes(searchTerm) ||
+                instrumento.Tipo_Instrumento.toLowerCase().includes(searchTerm)
+            );
+            renderInstrumentos(filteredInstrumentos);
+        }
+        
+        // Función para buscar instrumentos por ubicación
+        function searchInstrumentosUbicacion() {
+            const searchTerm = document.getElementById('searchUbicacionInput').value.toLowerCase();
+            const filteredInstrumentosUbicacion = instrumentosUbicacion.filter(item => 
+                item.Nombre_Instrumento.toLowerCase().includes(searchTerm) || 
+                item.Tipo_Instrumento.toLowerCase().includes(searchTerm) ||
+                item.Area.toLowerCase().includes(searchTerm) ||
+                item.Nombre_Ubicacion.toLowerCase().includes(searchTerm)
+            );
+            renderInstrumentosUbicacion(filteredInstrumentosUbicacion);
+        }
+        
+        // Función para preparar el modal para un nuevo instrumento
+        function prepareNewInstrumento() {
+            document.getElementById('instrumentoModalLabel').textContent = 'Nuevo Instrumento';
+            document.getElementById('instrumentoForm').reset();
+            document.getElementById('instrumentoId').value = '';
+            currentInstrumentoId = null;
+            
+            // Enfoca el primer campo después de que el modal se muestre
+            document.getElementById('instrumentoModal').addEventListener('shown.bs.modal', function () {
+                document.getElementById('nombreInput').focus();
+            }, { once: true });
+        }
+        
+        // Función para preparar el modal para una nueva asignación de instrumento por ubicación
+        function prepareNewUbicacion() {
+            document.getElementById('ubicacionModalLabel').textContent = 'Nueva Asignación de Instrumento';
+            document.getElementById('ubicacionForm').reset();
+            document.getElementById('currentInstrumentoId').value = '';
+            document.getElementById('currentUbicacionId').value = '';
+            currentUbicacionInstrumentoId = null;
+            currentUbicacionUbicacionId = null;
+            
+            // Enfoca el primer campo después de que el modal se muestre
+            document.getElementById('ubicacionModal').addEventListener('shown.bs.modal', function () {
+                document.getElementById('instrumentoSelect').focus();
+            }, { once: true });
+        }
+        
+        // Función para ver detalles de un instrumento
+        function viewInstrumento(id) {
+            const instrumento = instrumentos.find(i => i.Id_Instrumento === id);
+            if (instrumento) {
+                document.getElementById('viewId').textContent = instrumento.Id_Instrumento;
+                document.getElementById('viewNombre').textContent = instrumento.Nombre;
+                document.getElementById('viewDescripcion').textContent = instrumento.Descripcion;
+                document.getElementById('viewCodigo').textContent = instrumento.Codigo;
+                document.getElementById('viewTipo').textContent = instrumento.Tipo_Instrumento;
+                document.getElementById('viewUnidades').textContent = instrumento.Unidades;
+                document.getElementById('viewUnidadesMin').textContent = instrumento.Unidades_Minimas;
+                document.getElementById('viewUnidadesMax').textContent = instrumento.Unidades_Maximas;
+                
+                const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+                viewModal.show();
+            }
+        }
+        
+        // Función para ver detalles de un instrumento por ubicación
+        function viewInstrumentoUbicacion(instrumentoId, ubicacionId) {
+            const item = instrumentosUbicacion.find(i => i.Id_Instrumento === instrumentoId && i.Id_Ubicacion === ubicacionId);
+            if (item) {
+                document.getElementById('viewUbicacionInstrumentoId').textContent = item.Id_Instrumento;
+                document.getElementById('viewUbicacionUbicacionId').textContent = item.Id_Ubicacion;
+                document.getElementById('viewUbicacionNombre').textContent = item.Nombre_Instrumento;
+                document.getElementById('viewUbicacionTipo').textContent = item.Tipo_Instrumento;
+                document.getElementById('viewUbicacionArea').textContent = item.Area;
+                document.getElementById('viewUbicacionNombreUbicacion').textContent = item.Nombre_Ubicacion;
+                document.getElementById('viewUbicacionUnidades').textContent = item.Unidades_Por_Ubicacion;
+                
+                const viewModal = new bootstrap.Modal(document.getElementById('viewUbicacionModal'));
+                viewModal.show();
+            }
+        }
+        
+        // Función para editar un instrumento
+        function editInstrumento(id) {
+            const instrumento = instrumentos.find(i => i.Id_Instrumento === id);
+            if (instrumento) {
+                document.getElementById('instrumentoModalLabel').textContent = 'Editar Instrumento';
+                document.getElementById('instrumentoId').value = instrumento.Id_Instrumento;
+                document.getElementById('nombreInput').value = instrumento.Nombre;
+                document.getElementById('descripcionInput').value = instrumento.Descripcion;
+                document.getElementById('codigoInput').value = instrumento.Codigo;
+                document.getElementById('tipoInput').value = instrumento.Tipo_Instrumento;
+                document.getElementById('unidadesInput').value = instrumento.Unidades;
+                document.getElementById('unidadesMinInput').value = instrumento.Unidades_Minimas;
+                document.getElementById('unidadesMaxInput').value = instrumento.Unidades_Maximas;
+                
+                currentInstrumentoId = instrumento.Id_Instrumento;
+                
+                const instrumentoModal = new bootstrap.Modal(document.getElementById('instrumentoModal'));
+                instrumentoModal.show();
+            }
+        }
+        
+        // Función para editar un instrumento por ubicación
+        function editInstrumentoUbicacion(instrumentoId, ubicacionId) {
+            const item = instrumentosUbicacion.find(i => i.Id_Instrumento === instrumentoId && i.Id_Ubicacion === ubicacionId);
+            if (item) {
+                document.getElementById('ubicacionModalLabel').textContent = 'Editar Asignación de Instrumento';
+                document.getElementById('currentInstrumentoId').value = item.Id_Instrumento;
+                document.getElementById('currentUbicacionId').value = item.Id_Ubicacion;
+                document.getElementById('instrumentoSelect').value = item.Id_Instrumento;
+                document.getElementById('ubicacionSelect').value = item.Id_Ubicacion;
+                document.getElementById('unidadesPorUbicacionInput').value = item.Unidades_Por_Ubicacion;
+                
+                // Deshabilitar los selects ya que no se puede cambiar el instrumento o ubicación en una edición
+                document.getElementById('instrumentoSelect').disabled = true;
+                document.getElementById('ubicacionSelect').disabled = true;
+                
+                currentUbicacionInstrumentoId = item.Id_Instrumento;
+                currentUbicacionUbicacionId = item.Id_Ubicacion;
+                
+                const ubicacionModal = new bootstrap.Modal(document.getElementById('ubicacionModal'));
+                ubicacionModal.show();
+            }
+        }
+        
+        // Función para eliminar un instrumento
+        function deleteInstrumento(id) {
+            const instrumento = instrumentos.find(i => i.Id_Instrumento === id);
+            if (instrumento) {
+                document.getElementById('deleteNombre').textContent = instrumento.Nombre;
+                document.getElementById('deleteCodigo').textContent = instrumento.Codigo;
+                currentInstrumentoId = instrumento.Id_Instrumento;
+                
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                deleteModal.show();
+            }
+        }
+        
+        // Función para eliminar un instrumento por ubicación
+        function deleteInstrumentoUbicacion(instrumentoId, ubicacionId) {
+            const item = instrumentosUbicacion.find(i => i.Id_Instrumento === instrumentoId && i.Id_Ubicacion === ubicacionId);
+            if (item) {
+                document.getElementById('deleteUbicacionNombre').textContent = item.Nombre_Instrumento;
+                document.getElementById('deleteUbicacionUbicacion').textContent = `${item.Area} - ${item.Nombre_Ubicacion}`;
+                currentUbicacionInstrumentoId = item.Id_Instrumento;
+                currentUbicacionUbicacionId = item.Id_Ubicacion;
+                
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteUbicacionModal'));
+                deleteModal.show();
+            }
+        }
+        
+        // Función para confirmar la eliminación de un instrumento
+        async function confirmDelete() {
+            if (currentInstrumentoId) {
+                try {
+                    const deleteUrl = `${apiUrlInstrumento}/${currentInstrumentoId}`;
+                    console.log(`Eliminando instrumento con ID ${currentInstrumentoId}. URL: ${deleteUrl}`);
+                    
+                    const response = await fetch(deleteUrl, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error al eliminar el instrumento: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    console.log(`Instrumento con ID ${currentInstrumentoId} eliminado correctamente`);
+                    
+                    // Eliminar de la lista local
+                    instrumentos = instrumentos.filter(i => i.Id_Instrumento !== currentInstrumentoId);
+                    renderInstrumentos(instrumentos);
+                    
+                    // Cerrar el modal
+                    const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                    deleteModal.hide();
+                    
+                    // Mostrar mensaje de éxito
+                    showToast('Instrumento eliminado con éxito', 'success');
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('Error al eliminar el instrumento: ' + error.message, 'danger');
+                    
+                    // Cerrar el modal
+                    const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                    deleteModal.hide();
+                }
+            }
+        }
+        
+        // Función para confirmar la eliminación de un instrumento por ubicación
+        async function confirmDeleteUbicacion() {
+            if (currentUbicacionInstrumentoId && currentUbicacionUbicacionId) {
+                try {
+                    const deleteUrl = `${apiUrlInstrumentoUbicacion}/${currentUbicacionInstrumentoId}/${currentUbicacionUbicacionId}`;
+                    console.log(`Eliminando asignación de instrumento con ID ${currentUbicacionInstrumentoId} y ubicación ${currentUbicacionUbicacionId}. URL: ${deleteUrl}`);
+                    
+                    const response = await fetch(deleteUrl, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error al eliminar la asignación: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    console.log(`Asignación eliminada correctamente`);
+                    
+                    // Eliminar de la lista local
+                    instrumentosUbicacion = instrumentosUbicacion.filter(i => 
+                        !(i.Id_Instrumento === currentUbicacionInstrumentoId && i.Id_Ubicacion === currentUbicacionUbicacionId)
+                    );
+                    renderInstrumentosUbicacion(instrumentosUbicacion);
+                    
+                    // Cerrar el modal
+                    const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteUbicacionModal'));
+                    deleteModal.hide();
+                    
+                    // Mostrar mensaje de éxito
+                    showToast('Asignación eliminada con éxito', 'success');
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('Error al eliminar la asignación: ' + error.message, 'danger');
+                    
+                    // Cerrar el modal
+                    const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteUbicacionModal'));
+                    deleteModal.hide();
+                }
+            }
+        }
+        
+        // Función para guardar un instrumento (crear o actualizar)
+        async function saveInstrumento() {
+            const nombre = document.getElementById('nombreInput').value.trim();
+            const descripcion = document.getElementById('descripcionInput').value.trim();
+            const codigo = document.getElementById('codigoInput').value.trim();
+            const tipo = document.getElementById('tipoInput').value;
+            const unidades = parseInt(document.getElementById('unidadesInput').value);
+            const unidadesMin = parseInt(document.getElementById('unidadesMinInput').value);
+            const unidadesMax = parseInt(document.getElementById('unidadesMaxInput').value);
+            
+            if (!nombre || !descripcion || !codigo || !tipo || isNaN(unidades) || isNaN(unidadesMin) || isNaN(unidadesMax)) {
+                showToast('Por favor complete todos los campos correctamente', 'warning');
+                return;
+            }
+            
+            if (unidadesMin > unidadesMax) {
+                showToast('Las unidades mínimas no pueden ser mayores que las máximas', 'warning');
+                return;
+            }
+            
+            const instrumentoData = {
+                Nombre: nombre,
+                Descripcion: descripcion,
+                Codigo: codigo,
+                Tipo_Instrumento: tipo,
+                Unidades: unidades,
+                Unidades_Minimas: unidadesMin,
+                Unidades_Maximas: unidadesMax
+            };
+            
+            try {
+                let url = apiUrlInstrumento;
+                let method = 'POST';
+                
+                // Si es una edición, usamos PUT y la URL con ID
+                if (currentInstrumentoId) {
+                    url = `${apiUrlInstrumento}/${currentInstrumentoId}`;
+                    method = 'PUT';
+                    // No incluimos el ID en el cuerpo de la solicitud
+                }
+                
+                console.log(`Enviando datos a ${url} con método ${method}:`, instrumentoData);
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(instrumentoData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error al guardar el instrumento: ${response.status} ${response.statusText}`);
+                }
+                
+                const responseData = await response.json();
+                console.log('Respuesta del servidor:', responseData);
+                
+                // Recargar los datos
+                await loadInstrumentos();
+                
+                // Cerrar el modal
+                const instrumentoModal = bootstrap.Modal.getInstance(document.getElementById('instrumentoModal'));
+                instrumentoModal.hide();
+                
+                // Mostrar mensaje de éxito
+                showToast(currentInstrumentoId ? 'Instrumento actualizado con éxito' : 'Instrumento creado con éxito', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error al guardar el instrumento: ' + error.message, 'danger');
+                
+                // Cerrar el modal
+                const instrumentoModal = bootstrap.Modal.getInstance(document.getElementById('instrumentoModal'));
+                instrumentoModal.hide();
+            }
+        }
+        
+        // Función para guardar un instrumento por ubicación (crear o actualizar)
+        async function saveUbicacion() {
+            const instrumentoId = currentUbicacionInstrumentoId || parseInt(document.getElementById('instrumentoSelect').value);
+            const ubicacionId = currentUbicacionUbicacionId || parseInt(document.getElementById('ubicacionSelect').value);
+            const unidades = parseInt(document.getElementById('unidadesPorUbicacionInput').value);
+            
+            if (isNaN(instrumentoId) || isNaN(ubicacionId) || isNaN(unidades) || unidades <= 0) {
+                showToast('Por favor complete todos los campos correctamente', 'warning');
+                return;
+            }
+            
+            const ubicacionData = {
+                Unidades_Por_Ubicacion: unidades,
+                Id_Instrumento: instrumentoId,
+                Id_Ubicacion: ubicacionId
+            };
+            
+            try {
+                let url = apiUrlInstrumentoUbicacion;
+                let method = 'POST';
+                
+                // Si es una edición, usamos PUT y la URL con IDs
+                if (currentUbicacionInstrumentoId && currentUbicacionUbicacionId) {
+                    url = `${apiUrlInstrumentoUbicacion}/${currentUbicacionInstrumentoId}/${currentUbicacionUbicacionId}`;
+                    method = 'PUT';
+                    // Para PUT solo necesitamos enviar las unidades
+                    ubicacionData = {
+                        Unidades_Por_Ubicacion: unidades
+                    };
+                }
+                
+                console.log(`Enviando datos a ${url} con método ${method}:`, ubicacionData);
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ubicacionData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error al guardar la asignación: ${response.status} ${response.statusText}`);
+                }
+                
+                const responseData = await response.json();
+                console.log('Respuesta del servidor:', responseData);
+                
+                // Recargar los datos
+                await loadInstrumentosUbicacion();
+                
+                // Cerrar el modal
+                const ubicacionModal = bootstrap.Modal.getInstance(document.getElementById('ubicacionModal'));
+                ubicacionModal.hide();
+                
+                // Habilitar los selects para futuras operaciones
+                document.getElementById('instrumentoSelect').disabled = false;
+                document.getElementById('ubicacionSelect').disabled = false;
+                
+                // Mostrar mensaje de éxito
+                showToast(currentUbicacionInstrumentoId && currentUbicacionUbicacionId ? 'Asignación actualizada con éxito' : 'Asignación creada con éxito', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error al guardar la asignación: ' + error.message, 'danger');
+                
+                // Cerrar el modal
+                const ubicacionModal = bootstrap.Modal.getInstance(document.getElementById('ubicacionModal'));
+                ubicacionModal.hide();
+                
+                // Habilitar los selects para futuras operaciones
+                document.getElementById('instrumentoSelect').disabled = false;
+                document.getElementById('ubicacionSelect').disabled = false;
+            }
+        }
+        
+        // Función para mostrar notificaciones toast
+        function showToast(message, type = 'success') {
+            const toastContainer = document.querySelector('.toast-container');
+            
+            // Crear el elemento toast
+            const toastElement = document.createElement('div');
+            toastElement.className = `toast custom-toast align-items-center text-white bg-${type} border-0`;
+            toastElement.setAttribute('role', 'alert');
+            toastElement.setAttribute('aria-live', 'assertive');
+            toastElement.setAttribute('aria-atomic', 'true');
+            
+            // Crear el contenido del toast
+            const toastContent = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            toastElement.innerHTML = toastContent;
+            toastContainer.appendChild(toastElement);
+            
+            // Inicializar y mostrar el toast
+            const toast = new bootstrap.Toast(toastElement, {
+                autohide: true,
+                delay: 5000
+            });
+            
+            toast.show();
+            
+            // Eliminar el toast del DOM después de ocultarse
+            toastElement.addEventListener('hidden.bs.toast', function () {
+                toastElement.remove();
+            });
+        }
+    </script>
+</body>
+</html>
