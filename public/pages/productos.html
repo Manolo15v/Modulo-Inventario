@@ -88,7 +88,7 @@
             </nav>
             <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <h1 class="mb-4">Gestión de productos</h1>
-        
+
                 <!-- Pestañas de navegación -->
                 <ul class="nav nav-pills mb-4" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -106,6 +106,9 @@
                 <div class="tab-content" id="myTabContent">
                     <!-- Pestaña de Productos -->
                     <div class="tab-pane fade show active" id="productos-tab-pane" role="tabpanel" aria-labelledby="productos-tab" tabindex="0">
+                        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#productoModal" onclick="prepareNewProducto()">
+                            <i class="fas fa-plus"></i> Nuevo modelo
+                        </button>
                         <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#productoModal" onclick="prepareNewProducto()">
                             <i class="fas fa-plus"></i> Nuevo producto
                         </button>
@@ -201,6 +204,46 @@
         </div>
     </div>
     
+    <!-- Modal para Añadir Modelo Producto -->
+    <div class="modal fade" id="modeloModal" tabindex="-1" aria-labelledby="modeloModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="productoModalLabel">Nuevo Producto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modeloForm">
+                        <input type="hidden" id="productoId" value="">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="modeloSelect" class="form-label">Modelo de Producto</label>
+                                <select class="form-select" id="modeloSelect" required>
+                                    <option value="" disabled selected>Seleccione un modelo</option>
+                                    <!-- Los modelos se cargarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="unidadesInput" class="form-label">Unidades</label>
+                                <input type="number" class="form-control" id="unidadesInput" required min="1" placeholder="Ej: 100">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fechaVencimientoInput" class="form-label">Fecha de Vencimiento</label>
+                            <input type="date" class="form-control" id="fechaVencimientoInput" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="saveProducto()">
+                        <i class="fas fa-save me-1"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal para Añadir/Editar Producto -->
     <div class="modal fade" id="productoModal" tabindex="-1" aria-labelledby="productoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -532,7 +575,7 @@
             modelosProductos.forEach(modelo => {
                 const option = document.createElement('option');
                 option.value = modelo.Id_modelo_productos;
-                option.textContent = `${modelo.Nombre} (${modelo.Tipo})`;
+                option.textContent = `${modelo.Nombre} (${modelo.Tipo_Producto})`;
                 select.appendChild(option);
             });
         }
@@ -547,10 +590,12 @@
             
             // Añadir los productos al select
             productos.forEach(producto => {
-                const modelo = modelosProductos.find(m => m.Id_modelo_productos === producto.Id_modelo_productos) || { Nombre: 'Desconocido', Tipo: 'Desconocido' };
+                const fechaVencimiento = new Date(producto.Fecha_Vencimiento);
+                const fechaFormateada = fechaVencimiento.toISOString().split('T')[0];
+
                 const option = document.createElement('option');
                 option.value = producto.Id_Producto;
-                option.textContent = `${modelo.Nombre} (${modelo.Tipo})`;
+                option.textContent = `${producto.Nombre} (${fechaFormateada})`;
                 select.appendChild(option);
             });
         }
@@ -631,7 +676,6 @@
             }
             
             data.forEach(item => {
-                console.log(item);
                 
                 // Encontrar el producto y su modelo correspondiente
                 const producto = productos.find(p => p.Id_Producto === item.Id_Producto) || { Id_modelo_productos: null };
@@ -645,7 +689,7 @@
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${item.Nombre}</td>
+                    <td>${item.Nombre_Producto}</td>
                     <td>${fechaFormateada}</td>
                     <td>${ubicacion.Area}</td>
                     <td>${ubicacion.Ubicacion}</td>
@@ -672,9 +716,13 @@
             
             // Filtrar productos basados en el modelo (nombre y tipo)
             const filteredProductos = productos.filter(producto => {
-                const modelo = modelosProductos.find(m => m.Id_modelo_productos === producto.Id_modelo_productos) || { Nombre: '', Tipo: '' };
-                return modelo.Nombre.toLowerCase().includes(searchTerm) || 
-                       modelo.Tipo.toLowerCase().includes(searchTerm);
+
+                return (
+                    (producto.Nombre?.toLowerCase() || '').includes(searchTerm) ||
+                    (producto.Fecha_Vencimiento?.toLowerCase() || '').includes(searchTerm) ||
+                    (producto.Tipo_Producto?.toLowerCase() || '').includes(searchTerm) ||
+                    (producto.Codigo?.toLowerCase() || '').includes(searchTerm)
+                );
             });
             
             renderProductos(filteredProductos);
@@ -685,15 +733,13 @@
             const searchTerm = document.getElementById('searchUbicacionInput').value.toLowerCase();
             
             // Filtrar productos por ubicación
-            const filteredProductosUbicacion = productosUbicacion.filter(item => {
-                const producto = productos.find(p => p.Id_Producto === item.Id_Producto) || { Id_modelo_productos: null };
-                const modelo = modelosProductos.find(m => m.Id_modelo_productos === producto.Id_modelo_productos) || { Nombre: '', Tipo: '' };
-                const ubicacion = ubicaciones.find(u => u.Id_Ubicacion === item.Id_Ubicacion) || { Area: '', Ubicacion: '' };
-                
-                return modelo.Nombre.toLowerCase().includes(searchTerm) || 
-                       modelo.Tipo.toLowerCase().includes(searchTerm) ||
-                       ubicacion.Area.toLowerCase().includes(searchTerm) ||
-                       ubicacion.Ubicacion.toLowerCase().includes(searchTerm);
+            const filteredProductosUbicacion = productosUbicacion.filter(producto => {
+                return (
+                    (producto.Fecha_Vencimiento?.toLowerCase() || '').includes(searchTerm) ||
+                    (producto.Nombre_Producto?.toLowerCase() || '').includes(searchTerm) ||
+                    (producto.Area?.toLowerCase() || '').includes(searchTerm) ||
+                    (producto.Ubicacion?.toLowerCase() || '').includes(searchTerm)
+                );
             });
             
             renderProductosUbicacion(filteredProductosUbicacion);

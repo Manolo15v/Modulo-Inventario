@@ -139,67 +139,102 @@
                 <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#almacenModal" onclick="prepareNewAlmacen()">
                     <i class="fas fa-plus"></i> Nuevo Almacén
                 </button>
-            </main>
 
-            <!-- Modal para Ver Detalles -->
-            <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-info text-white">
-                            <h5 class="modal-title" id="viewModalLabel">Detalles del Almacén</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <!-- Modal para Añadir/Editar Almacén -->
+                <div class="modal fade" id="almacenModal" tabindex="-1" aria-labelledby="almacenModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="almacenModalLabel">Nuevo Almacén</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="almacenForm">
+                                    <input type="hidden" id="almacenId" value="">
+                                    <div class="mb-3">
+                                        <label for="areaInput" class="form-label">Área</label>
+                                        <input type="text" class="form-control" id="areaInput" required placeholder="Ej: Zona Norte">
+                                        <div class="form-text">Ingrese el nombre del área o departamento</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="ubicacionInput" class="form-label">Ubicación</label>
+                                        <input type="text" class="form-control" id="ubicacionInput" required placeholder="Ej: Pasillo 5, Estante 3">
+                                        <div class="form-text">Especifique la ubicación exacta dentro del almacén</div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-success" onclick="saveAlmacen()">
+                                    <i class="fas fa-save me-1"></i> Guardar
+                                </button>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title" id="viewArea"></h5>
-                                    <p class="card-text"><strong>ID:</strong> <span id="viewId"></span></p>
-                                    <p class="card-text"><strong>Ubicación:</strong> <span id="viewUbicacion"></span></p>
+                    </div>
+                </div>
+
+                    <!-- Modal para Ver Detalles -->
+                <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title" id="viewModalLabel">Detalles del Almacén</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title" id="viewArea"></h5>
+                                        <p class="card-text"><strong>ID:</strong> <span id="viewId"></span></p>
+                                        <p class="card-text"><strong>Ubicación:</strong> <span id="viewUbicacion"></span></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Modal de Confirmación para Eliminar -->
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                Esta acción no se puede deshacer.
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             </div>
-                            <p>¿Está seguro que desea eliminar este almacén?</p>
-                            <p><strong>Área:</strong> <span id="deleteArea"></span></p>
-                            <p><strong>Ubicación:</strong> <span id="deleteUbicacion"></span></p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-danger" onclick="confirmDelete()">
-                                <i class="fas fa-trash me-1"></i> Eliminar
-                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+                
+                <!-- Modal de Confirmación para Eliminar -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Esta acción no se puede deshacer.
+                                </div>
+                                <p>¿Está seguro que desea eliminar este almacén?</p>
+                                <p><strong>Área:</strong> <span id="deleteArea"></span></p>
+                                <p><strong>Ubicación:</strong> <span id="deleteUbicacion"></span></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                                    <i class="fas fa-trash me-1"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </main>
+
+            
 
             <!-- Contenedor para las notificaciones toast -->
             <div class="toast-container"></div>
 
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Variables globales
         let almacenes = [];
