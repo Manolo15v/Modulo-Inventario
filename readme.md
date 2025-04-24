@@ -11,38 +11,16 @@ Esta ruta maneja las operaciones relacionadas con los almacenes.
     *   **Parámetros:** Ninguno.
     *   **Respuesta:** Retorna una lista de todos los almacenes.
     *   **Tipo de solicitud:** GET
-    *   **Ejemplo de respuesta:**
-    ``` json
-    [
-      {
-        "id": 1,
-        "nombre": "Almacén Principal",
-        "area": "Zona A",
-        "ubicacion": "Calle 1 #1-1"
-      },
-      {
-        "id": 2,
-        "nombre": "Almacén Secundario",
-        "area": "Zona B",
-        "ubicacion": "Calle 2 #2-2"
-      }
-    ]
-    ```
+ 
+
 *   **`GET /api/inventario/almacen/:id`**
     *   **Descripción:** Obtiene un almacén específico por su ID.
     *   **Parámetros:**
         *   `id` (obligatorio): ID del almacén a buscar.
     *   **Respuesta:** Retorna el almacén con el ID especificado.
     *   **Tipo de solicitud:** GET
-    *   **Ejemplo de respuesta:**
-    ``` json
-    {
-      "id": 1,
-      "nombre": "Almacén Principal",
-      "area": "Zona A",
-      "ubicacion": "Calle 1 #1-1"
-    }
-    ```
+
+
 
 *   **`GET /api/inventario/almacen/area/:area`**
     *   **Descripción:** Obtiene todos los almacenes que pertenecen a un área específica.
@@ -50,17 +28,7 @@ Esta ruta maneja las operaciones relacionadas con los almacenes.
         *   `area` (obligatorio): Área de los almacenes a buscar.
     *   **Respuesta:** Retorna una lista de almacenes que pertenecen al área especificada.
     *   **Tipo de solicitud:** GET
-    *   **Ejemplo de respuesta:**
-    ``` json
-    [
-      {
-        "id": 1,
-        "nombre": "Almacén Principal",
-        "area": "Zona A",
-        "ubicacion": "Calle 1 #1-1"
-      }
-    ]
-    ``` json
+
 
 *   **`POST /api/inventario/almacen`**
     *   **Descripción:** Crea un nuevo almacén.
@@ -71,13 +39,7 @@ Esta ruta maneja las operaciones relacionadas con los almacenes.
     *   **Respuesta:** Retorna el almacén creado.
     *   **Tipo de solicitud:** POST
     *   **Ejemplo de solicitud:**
-    ``` json
-    {
-      "nombre": "Nuevo Almacén",
-      "area": "Zona C",
-      "ubicacion": "calle 3 #3-3"
-    }
-    ``` 
+
 
 *   **`PUT /api/inventario/almacen/:id`**
     *   **Descripción:** Actualiza la información de un almacén existente.
@@ -89,13 +51,7 @@ Esta ruta maneja las operaciones relacionadas con los almacenes.
     *   **Respuesta:** Retorna el almacén actualizado.
     *   **Tipo de solicitud:** PUT
     *   **Ejemplo de solicitud:**
-    ``` json
-    {
-      "nombre": "Almacén Actualizado",
-      "area": "Zona D",
-      "ubicacion": "calle 4 #4-4"
-    }
-    ``` 
+
 
 *   **`DELETE /api/inventario/almacen/:id`**
     *   **Descripción:** Elimina un almacén específico por su ID.
@@ -103,12 +59,7 @@ Esta ruta maneja las operaciones relacionadas con los almacenes.
         *   `id` (obligatorio): ID del almacén a eliminar.
     *   **Respuesta:** Retorna un mensaje de confirmación de eliminación.
     *   **Tipo de solicitud:** DELETE
-    *   **Ejemplo de respuesta:**
-    ``` json
-    {
-      "message": "Almacén eliminado correctamente"
-    }
-    ``` 
+ 
 
 ## 2. Equipos (`/api/inventario/equipos`)
 
@@ -119,21 +70,7 @@ Esta ruta maneja las operaciones relacionadas con los equipos.
     *   **Parámetros:** Ninguno.
     *   **Respuesta:** Retorna una lista de todos los equipos.
     *   **Tipo de solicitud:** GET
-    *   **Ejemplo de respuesta:**
-    ``` json
-    [
-        {
-            "id": 1,
-            "modeloId": 1,
-            "nSerie": "N12345"
-        },
-        {
-            "id": 2,
-            "modeloId": 2,
-            "nSerie": "N67890"
-        }
-    ]
-    ```
+
 
 *   **`GET /api/inventario/equipos/:id`**
     *   **Descripción:** Obtiene un equipo específico por su ID de modelo.
@@ -141,14 +78,7 @@ Esta ruta maneja las operaciones relacionadas con los equipos.
         *   `id` (obligatorio): ID del modelo del equipo a buscar.
     *   **Respuesta:** Retorna el equipo con el ID de modelo especificado.
     *   **Tipo de solicitud:** GET
-    *   **Ejemplo de respuesta:**
-    ``` json
-    {
-        "id": 1,
-        "modeloId": 1,
-        "nSerie": "N12345"
-    }
-    ```
+
 
 *   **`GET /api/inventario/equipos/modelo/:id`**
     *   **Descripción:** Obtiene un equipo específico por su ID.
@@ -156,14 +86,7 @@ Esta ruta maneja las operaciones relacionadas con los equipos.
         *   `id` (obligatorio): ID del equipo a buscar.
     *   **Respuesta:** Retorna el equipo con el ID especificado.
     *   **Tipo de solicitud:** GET
-    *   **Ejemplo de respuesta:**
-    ``` json
-    {
-        "id": 1,
-        "modeloId": 1,
-        "nSerie": "N12345"
-    }
-    ```
+
 
 *   **`POST /api/inventario/equipos`**
     *   **Descripción:** Crea un nuevo equipo.
@@ -172,13 +95,7 @@ Esta ruta maneja las operaciones relacionadas con los equipos.
         *   `nSerie` (obligatorio): Numero de serie del equipo.
     *   **Respuesta:** Retorna el equipo creado.
     *   **Tipo de solicitud:** POST
-    *   **Ejemplo de solicitud:**
-    ``` json
-    {
-        "modeloId": 2,
-        "nSerie": "N98765"
-    }
-    ```
+
 
 *   **`PUT /api/inventario/equipos/:id`**
     *   **Descripción:** Actualiza la información de un equipo existente.
@@ -188,13 +105,7 @@ Esta ruta maneja las operaciones relacionadas con los equipos.
         *   `nSerie` (opcional): Nuevo numero de serie del equipo.
     *   **Respuesta:** Retorna el equipo actualizado.
     *   **Tipo de solicitud:** PUT
-    *   **Ejemplo de solicitud:**
-    ``` json
-    {
-        "modeloId": 3,
-        "nSerie": "N54321"
-    }
-    ```
+
 
 *   **`DELETE /api/inventario/equipos/:id`**
     *   **Descripción:** Elimina un equipo específico por su ID.
@@ -202,12 +113,7 @@ Esta ruta maneja las operaciones relacionadas con los equipos.
         *   `id` (obligatorio): ID del equipo a eliminar.
     *   **Respuesta:** Retorna un mensaje de confirmación de eliminación.
     *   **Tipo de solicitud:** DELETE
-    *   **Ejemplo de respuesta:**
-    ``` json
-    {
-      "message": "Equipo eliminado correctamente"
-    }
-    ```
+
 
 ## 3. Modelos de Equipos (`/api/inventario/modeloEquipos`)
 
@@ -218,35 +124,15 @@ Esta ruta maneja las operaciones relacionadas con los modelos de equipos.
     *   **Parámetros:** Ninguno.
     *   **Respuesta:** Retorna una lista de todos los modelos de equipos.
     *   **Tipo de solicitud:** GET
-    *   **Ejemplo de respuesta:**
-    ``` json
-    [
-      {
-        "id": 1,
-        "nombre": "Modelo A",
-        "descripcion": "Modelo de equipo A"
-      },
-      {
-        "id": 2,
-        "nombre": "Modelo B",
-        "descripcion": "Modelo de equipo B"
-      }
-    ]
-    ```
+
+
 *   **`GET /api/inventario/modeloEquipos/:id`**
     *   **Descripción:** Obtiene un modelo de equipo específico por su ID.
     *   **Parámetros:**
         *   `id` (obligatorio): ID del modelo de equipo a buscar.
     *   **Respuesta:** Retorna el modelo de equipo con el ID especificado.
     *   **Tipo de solicitud:** GET
-    *   **Ejemplo de respuesta:**
-    ``` json
-    {
-      "id": 1,
-      "nombre": "Modelo A",
-      "descripcion": "Modelo de equipo A"
-    }
-    ```
+
 
 *   **`POST /api/inventario/modeloEquipos`**
     *   **Descripción:** Crea un nuevo modelo de equipo.
@@ -255,13 +141,7 @@ Esta ruta maneja las operaciones relacionadas con los modelos de equipos.
         *   `descripcion` (obligatorio): Descripción del modelo de equipo.
     *   **Respuesta:** Retorna el modelo de equipo creado.
     *   **Tipo de solicitud:** POST
-    *   **Ejemplo de solicitud:**
-    ``` json
-    {
-      "nombre": "Modelo C",
-      "descripcion": "Modelo de equipo C"
-    }
-    ```
+
 
 *   **`PUT /api/inventario/modeloEquipos/:id`**
     *   **Descripción:** Actualiza la información de un modelo de equipo existente.
@@ -271,13 +151,7 @@ Esta ruta maneja las operaciones relacionadas con los modelos de equipos.
         *   `descripcion` (opcional): Nueva descripción del modelo de equipo.
     *   **Respuesta:** Retorna el modelo de equipo actualizado.
     *   **Tipo de solicitud:** PUT
-    *   **Ejemplo de solicitud:**
-    ``` json
-    {
-      "nombre": "Modelo A Actualizado",
-      "descripcion": "Modelo de equipo A con nueva descripción"
-    }
-    ```
+
 
 *   **`DELETE /api/inventario/modeloEquipos/:id`**
     *   **Descripción:** Elimina un modelo de equipo específico por su ID.
@@ -285,12 +159,7 @@ Esta ruta maneja las operaciones relacionadas con los modelos de equipos.
         *   `id` (obligatorio): ID del modelo de equipo a eliminar.
     *   **Respuesta:** Retorna un mensaje de confirmación de eliminación.
     *   **Tipo de solicitud:** DELETE
-    *   **Ejemplo de respuesta:**
-    ``` json
-    {
-      "message": "Modelo de equipo eliminado correctamente"
-    }
-    ```
+
 
 ## 4. Instrumentos (`/api/inventario/instrumento`)
 
